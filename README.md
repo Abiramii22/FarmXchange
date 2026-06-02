@@ -1,17 +1,2 @@
-# farmxchange
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# FarmXchange
+FarmXchange is a Flutter-based agricultural equipment rental platform that helps farmers rent machinery through distance-based and hourly-based booking options. The app includes user, agent, and admin modules, payment management, WhatsApp notifications, booking tracking, and dashboard analytics.
