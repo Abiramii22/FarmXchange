@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "867937313094",
+    "project_id": "farmxchange-cfbf5",
+    "storage_bucket": "farmxchange-cfbf5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867937313094:android:7677f580cf1c27a6d24547",
+        "android_client_info": {
+          "package_name": "com.example.farmxchange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "867937313094-9sce6utspbgg9klb4s8gh89s0nbk7ptb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.farmxchange",
+            "certificate_hash": "a953407878e153dab914b293b7fb9f46d46ec383"
+          }
+        },
+        {
+          "client_id": "867937313094-0o6q43qkor54n6nfldkh5bs6pju7t870.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbnefYDoS_AgZwWvvifbs1eqtBpUvVSNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "867937313094-0o6q43qkor54n6nfldkh5bs6pju7t870.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
