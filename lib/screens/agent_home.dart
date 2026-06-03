@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 
 import '../data/app_store.dart';
 import '../services/firebase_service.dart';
@@ -16,6 +17,22 @@ class AgentHome extends StatefulWidget {
   State<AgentHome> createState() => _AgentHomeState();
 }
 
+=======
+
+import '../data/app_store.dart';
+import '../services/firebase_service.dart';
+import '../services/whatsapp_service.dart';
+import 'login_screen.dart';
+import 'profile_page.dart';
+
+class AgentHome extends StatefulWidget {
+  const AgentHome({super.key});
+
+  @override
+  State<AgentHome> createState() => _AgentHomeState();
+}
+
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
 class _AgentHomeState extends State<AgentHome> {
   static const Map<String, String> _ta = {
     'Stock update failed': 'ஸ்டாக் புதுப்பிப்பு தோல்வி',
@@ -86,6 +103,7 @@ class _AgentHomeState extends State<AgentHome> {
     }
     return current;
   }
+<<<<<<< HEAD
 
   void showMsg(String en, String ta) {
     if (!mounted) return;
@@ -266,6 +284,188 @@ class _AgentHomeState extends State<AgentHome> {
     });
   }
 
+=======
+
+  void showMsg(String en, String ta) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(t(en, ta))),
+    );
+  }
+
+  Future<void> changeStock(String agentId, int change) async {
+    try {
+      await FirebaseService.incrementAgentStock(
+        agentId: agentId,
+        change: change,
+      ).timeout(const Duration(seconds: 10));
+    } catch (e) {
+      showMsg(
+        "Stock update failed: $e",
+        "Stock update à®†à®•à®µà®¿à®²à¯à®²à¯ˆ: $e",
+      );
+    }
+  }
+
+  Future<void> changeAvailability(String agentId, bool available) async {
+    try {
+      await FirebaseService.updateAgentAvailability(
+        agentId: agentId,
+        available: available,
+      ).timeout(const Duration(seconds: 10));
+    } catch (e) {
+      showMsg(
+        "Availability update failed: $e",
+        "Availability update à®†à®•à®µà®¿à®²à¯à®²à¯ˆ: $e",
+      );
+    }
+  }
+
+  Future<void> updateBookingAndNotify({
+    required String bookingId,
+    String? status,
+    String? paymentStatus,
+    bool complete = false,
+  }) async {
+    if (complete) {
+      await FirebaseService.completeBooking(bookingId: bookingId);
+    } else if (status != null) {
+      await FirebaseService.updateBookingStatus(
+        bookingId: bookingId,
+        status: status,
+      );
+    } else if (paymentStatus != null) {
+      await FirebaseService.updatePaymentStatus(
+        bookingId: bookingId,
+        paymentStatus: paymentStatus,
+      );
+    }
+
+    final snap = await FirebaseFirestore.instance
+        .collection('bookings')
+        .doc(bookingId)
+        .get();
+    final data = snap.data();
+    if (data == null) return;
+    final message = (paymentStatus == 'Paid' || paymentStatus == 'Received')
+        ? WhatsAppService.paymentDoneMessage(data)
+        : WhatsAppService.statusMessage(data);
+    await WhatsAppService.openMessage(
+      phone: data['userPhone']?.toString() ?? '',
+      message: message,
+    );
+    await WhatsAppService.openMessage(
+      phone: data['agentPhone']?.toString() ?? '',
+      message: message,
+    );
+  }
+
+  Future<void> addMachine() async {
+    final machine = TextEditingController();
+    final machineTa = TextEditingController();
+    final phone = TextEditingController(text: AppStore.currentUserPhone);
+    final location = TextEditingController(text: AppStore.currentUserLocation);
+    final price = TextEditingController();
+    final stock = TextEditingController(text: "1");
+    final image = TextEditingController(text: "assets/images/tractor.jpg");
+    final rating = TextEditingController(text: "4.0");
+    final review = TextEditingController();
+    final reviewTa = TextEditingController();
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(t("Add Machine", "à®‡à®¯à®¨à¯à®¤à®¿à®°à®®à¯ à®šà¯‡à®°à¯")),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: machine,
+                  decoration: InputDecoration(labelText: t("Machine", "à®‡à®¯à®¨à¯à®¤à®¿à®°à®®à¯")),
+                ),
+                TextField(
+                  controller: machineTa,
+                  decoration: InputDecoration(labelText: t("Machine Tamil", "à®‡à®¯à®¨à¯à®¤à®¿à®°à®®à¯ à®¤à®®à®¿à®´à¯")),
+                ),
+                TextField(
+                  controller: phone,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(labelText: t("Agent Phone", "à®®à¯à®•à®µà®°à¯ à®¤à¯Šà®²à¯ˆà®ªà¯‡à®šà®¿")),
+                ),
+                TextField(
+                  controller: location,
+                  decoration: InputDecoration(labelText: t("Location", "à®‡à®Ÿà®®à¯")),
+                ),
+                TextField(
+                  controller: price,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: t("Hourly Rate", "à®®à®£à®¿ à®•à®Ÿà¯à®Ÿà®£à®®à¯")),
+                ),
+                TextField(
+                  controller: stock,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: t("Stock", "à®¸à¯à®Ÿà®¾à®•à¯")),
+                ),
+                TextField(
+                  controller: image,
+                  decoration: InputDecoration(labelText: t("Image path/url", "à®ªà®Ÿ path/url")),
+                ),
+                TextField(
+                  controller: rating,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: t("Rating", "Rating")),
+                ),
+                TextField(
+                  controller: review,
+                  decoration: InputDecoration(labelText: t("Review", "Review")),
+                ),
+                TextField(
+                  controller: reviewTa,
+                  decoration: InputDecoration(labelText: t("Review Tamil", "Review Tamil")),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(t("Back", "à®ªà®¿à®©à¯")),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(t("Save", "à®šà¯‡à®®à®¿")),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (ok != true || machine.text.trim().isEmpty) return;
+
+    await FirebaseFirestore.instance.collection('agents').add({
+      'machine': machine.text.trim(),
+      'machineTa': machineTa.text.trim(),
+      'agentName': AppStore.currentUserName,
+      'agentPhone': phone.text.trim(),
+      'ownerId': AppStore.currentUserPhone,
+      'location': location.text.trim(),
+      'locationTa': location.text.trim(),
+      'image': image.text.trim(),
+      'hourlyRate': double.tryParse(price.text.trim()) ?? 0,
+      'distanceKm': 0,
+      'stock': int.tryParse(stock.text.trim()) ?? 1,
+      'available': (int.tryParse(stock.text.trim()) ?? 1) > 0,
+      'rating': double.tryParse(rating.text.trim()) ?? 0,
+      'review': review.text.trim(),
+      'reviewTa': reviewTa.text.trim(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
   String field(Map<String, dynamic> data, String enKey, String taKey) {
     final tamilValue = data[taKey]?.toString().trim() ?? '';
     final englishValue = data[enKey]?.toString().trim() ?? '';
@@ -275,6 +475,7 @@ class _AgentHomeState extends State<AgentHome> {
     if (enKey == 'machine') return AppStore.machineName(value);
     return AppStore.isTamil ? AppStore.cleanTamil(value) : value;
   }
+<<<<<<< HEAD
 
   String imageFor(Map<String, dynamic> data) {
     final raw = data['image']?.toString() ?? '';
@@ -348,10 +549,86 @@ class _AgentHomeState extends State<AgentHome> {
             data['agentPhone']?.toString() ?? '',
           );
         }).toSet();
+=======
+
+  String imageFor(Map<String, dynamic> data) {
+    final raw = data['image']?.toString() ?? '';
+    final id = data['id']?.toString().toLowerCase() ?? '';
+    final machine = data['machine']?.toString().toLowerCase() ?? '';
+
+    if (raw.isNotEmpty && raw != 'assets/logo.png') return raw;
+    if (id.contains('tractor') || machine.contains('tractor')) {
+      return 'assets/images/tractor.jpg';
+    }
+    if (id.contains('baler') || machine.contains('baler')) {
+      return 'assets/images/baler.jpg';
+    }
+    if (id.contains('seed') || machine.contains('seed')) {
+      return 'assets/images/seed_drill.jpg';
+    }
+    if (id.contains('harvester') || machine.contains('harvester')) {
+      return 'assets/images/harvester.jpg';
+    }
+    if (id.contains('plough') || machine.contains('plough')) {
+      return 'assets/images/plough.jpg';
+    }
+    if (id.contains('tiller') || machine.contains('tiller')) {
+      return 'assets/images/power_tiller.jpg';
+    }
+    if (id.contains('sprayer') || machine.contains('sprayer')) {
+      return 'assets/images/Sprayer.jpg';
+    }
+    return raw;
+  }
+
+  Widget machineImage(Map<String, dynamic> data) {
+    final image = imageFor(data);
+    if (image.startsWith('http')) {
+      return Image.network(image, width: 54, height: 54, fit: BoxFit.cover);
+    }
+    return Image.asset(
+      image.isEmpty ? 'assets/logo.png' : image,
+      width: 54,
+      height: 54,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => Image.asset(
+        'assets/logo.png',
+        width: 54,
+        height: 54,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  bool samePhone(dynamic value, String myPhone) {
+    final mine = FirebaseService.phoneDigits(myPhone);
+    final other = FirebaseService.phoneDigits(value?.toString() ?? '');
+    return mine.isNotEmpty && other.isNotEmpty && mine == other;
+  }
+
+  Widget agentEarningsCard(List<QueryDocumentSnapshot> products) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('bookings').snapshots(),
+      builder: (context, snapshot) {
+        final myPhone = AppStore.currentUserPhone.trim();
+        final myName = AppStore.currentUserName.trim().toLowerCase();
+        final productIds = products.map((doc) => doc.id).toSet();
+        final productNames = products.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return data['machine']?.toString().trim().toLowerCase() ?? '';
+        }).toSet();
+        final productPhones = products.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return FirebaseService.phoneDigits(
+            data['agentPhone']?.toString() ?? '',
+          );
+        }).toSet();
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
         final earnedBookings = (snapshot.data?.docs ?? []).where((doc) {
           final data = doc.data() as Map<String, dynamic>;
           final agentName =
               data['agentName']?.toString().trim().toLowerCase() ?? '';
+<<<<<<< HEAD
           final bookingAgentId = data['agentId']?.toString() ?? '';
           final bookingMachine =
               data['machine']?.toString().trim().toLowerCase() ?? '';
@@ -364,6 +641,20 @@ class _AgentHomeState extends State<AgentHome> {
               productPhones.contains(bookingAgentPhone) ||
               samePhone(data['agentOwnerId'], myPhone) ||
               samePhone(data['agentPhone'], myPhone) ||
+=======
+          final bookingAgentId = data['agentId']?.toString() ?? '';
+          final bookingMachine =
+              data['machine']?.toString().trim().toLowerCase() ?? '';
+          final bookingAgentPhone = FirebaseService.phoneDigits(
+            data['agentPhone']?.toString() ?? '',
+          );
+          final belongsToAgent = myPhone.isEmpty ||
+              productIds.contains(bookingAgentId) ||
+              productNames.contains(bookingMachine) ||
+              productPhones.contains(bookingAgentPhone) ||
+              samePhone(data['agentOwnerId'], myPhone) ||
+              samePhone(data['agentPhone'], myPhone) ||
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
               samePhone(data['vendorPhone'], myPhone) ||
               (myName.isNotEmpty && agentName == myName);
           if (!belongsToAgent) return false;
@@ -429,6 +720,7 @@ class _AgentHomeState extends State<AgentHome> {
       },
     );
   }
+<<<<<<< HEAD
 
   Widget productsTab() {
     return StreamBuilder<QuerySnapshot>(
@@ -601,6 +893,180 @@ class _AgentHomeState extends State<AgentHome> {
     );
   }
 
+=======
+
+  Widget productsTab() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('agents').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final rawDocs = snapshot.data!.docs.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final machine = data['machine']?.toString().toLowerCase() ?? '';
+          final myPhone = AppStore.currentUserPhone.trim();
+          final owner = data['ownerId']?.toString() ?? '';
+          final phone = data['agentPhone']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+          final mine = myPhone.isEmpty || owner.isEmpty || owner == myPhone || phone == myPhone;
+          return !machine.contains('thresher') && mine;
+        }).toList();
+        final seen = <String>{};
+        final docs = rawDocs.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final key = (data['machine']?.toString().trim().toLowerCase() ??
+                  doc.id.toLowerCase())
+              .replaceAll(RegExp(r'\s+'), ' ');
+          if (seen.contains(key)) return false;
+          seen.add(key);
+          return true;
+        }).toList();
+        if (docs.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(t("No machines added yet", "à®‡à®©à¯à®©à¯à®®à¯ à®‡à®¯à®¨à¯à®¤à®¿à®°à®®à¯ à®šà¯‡à®°à¯à®•à¯à®•à®µà®¿à®²à¯à®²à¯ˆ")),
+                  const SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    onPressed: addMachine,
+                    icon: const Icon(Icons.add),
+                    label: Text(t("Add Machine", "à®‡à®¯à®¨à¯à®¤à®¿à®°à®®à¯ à®šà¯‡à®°à¯")),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        final activeProducts = docs.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final stock =
+              (data['stock'] is num) ? (data['stock'] as num).toInt() : 0;
+          return data['available'] == true && stock > 0;
+        }).length;
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: agentEarningsCard(docs),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _summaryCard(
+                      t("Active Products", "à®•à®¿à®Ÿà¯ˆà®•à¯à®•à¯à®®à¯ à®ªà¯Šà®°à¯à®Ÿà¯à®•à®³à¯"),
+                      "$activeProducts",
+                      Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: docs.length,
+                itemBuilder: (context, i) {
+                  final doc = docs[i];
+                  final data = doc.data() as Map<String, dynamic>;
+                  final stock = (data['stock'] is num)
+                      ? (data['stock'] as num).toInt()
+                      : 0;
+                  final available = data['available'] == true && stock > 0;
+
+                  return Card(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: machineImage(data),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  field(data, 'machine', 'machineTa'),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "${t("Rate", "à®•à®Ÿà¯à®Ÿà®£à®®à¯")}: Rs.${data['hourlyRate'] ?? 0}/hr",
+                                ),
+                                Row(
+                                  children: [
+                                    Text("${t("Stock", "à®¸à¯à®Ÿà®¾à®•à¯")}: "),
+                                    IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () => changeStock(doc.id, -1),
+                                      icon: const Icon(
+                                        Icons.remove_circle_outline,
+                                      ),
+                                    ),
+                                    Text(
+                                      "$stock",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () => changeStock(doc.id, 1),
+                                      icon: const Icon(Icons.add_circle_outline),
+                                    ),
+                                  ],
+                                ),
+                                SwitchListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  value: available,
+                                  onChanged: stock <= 0
+                                      ? null
+                                      : (value) => changeAvailability(
+                                            doc.id,
+                                            value,
+                                          ),
+                                  title: Text(
+                                    available
+                                        ? t("Available", "à®•à®¿à®Ÿà¯ˆà®•à¯à®•à¯à®®à¯")
+                                        : t("Unavailable", "à®•à®¿à®Ÿà¯ˆà®•à¯à®•à®µà®¿à®²à¯à®²à¯ˆ"),
+                                    style: TextStyle(
+                                      color:
+                                          available ? Colors.green : Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
   Widget bookingsTab() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -752,6 +1218,7 @@ class _AgentHomeState extends State<AgentHome> {
       },
     );
   }
+<<<<<<< HEAD
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -834,3 +1301,87 @@ class _AgentHomeState extends State<AgentHome> {
   }
 }
 
+=======
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
+        return false;
+      },
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+        appBar: AppBar(
+          title: Text(t("Agent Dashboard", "à®®à¯à®•à®µà®°à¯ à®Ÿà®¾à®·à¯à®ªà¯‹à®°à¯à®Ÿà¯")),
+          backgroundColor: Colors.blueGrey,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              },
+            ),
+          ],
+          bottom: TabBar(
+            tabs: [
+              Tab(text: t("Machines", "à®‡à®¯à®¨à¯à®¤à®¿à®°à®™à¯à®•à®³à¯")),
+              Tab(text: t("Bookings", "à®ªà®¤à®¿à®µà¯à®•à®³à¯")),
+            ],
+          ),
+        ),
+          body: TabBarView(
+          children: [
+            productsTab(),
+            bookingsTab(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: addMachine,
+          icon: const Icon(Icons.add),
+          label: Text(t("Machine", "à®‡à®¯à®¨à¯à®¤à®¿à®°à®®à¯")),
+          backgroundColor: Colors.green,
+        ),
+        ),
+      ),
+    );
+  }
+
+  Widget _summaryCard(String title, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Text(title, style: const TextStyle(fontSize: 12)),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376

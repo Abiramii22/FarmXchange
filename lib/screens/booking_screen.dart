@@ -158,8 +158,13 @@ class _BookingScreenState extends State<BookingScreen> {
       );
       return false;
     }
+<<<<<<< HEAD
   }
 
+=======
+  }
+
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
   Future<void> confirmBooking() async {
     if (selectedDate == null || selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -176,10 +181,17 @@ class _BookingScreenState extends State<BookingScreen> {
       return;
     }
 
+<<<<<<< HEAD
     final hasTrackingLocation = await ensureTrackingLocation();
     if (!hasTrackingLocation) return;
 
     setState(() => loading = true);
+=======
+    final hasTrackingLocation = await ensureTrackingLocation();
+    if (!hasTrackingLocation) return;
+
+    setState(() => loading = true);
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
     try {
       final machine = field('machine', 'machineTa');
       late final String bookingId;
@@ -260,6 +272,7 @@ class _BookingScreenState extends State<BookingScreen> {
       await WhatsAppService.openMessage(
         phone: booking.userPhone,
         message: WhatsAppService.userBookingMessage(booking),
+<<<<<<< HEAD
       );
 
       // Payment Done WhatsApp
@@ -278,6 +291,26 @@ class _BookingScreenState extends State<BookingScreen> {
         });
         await WhatsAppService.openMessage(phone: booking.userPhone, message: paidMessage);
         await WhatsAppService.openMessage(phone: booking.agentPhone, message: paidMessage);
+=======
+      );
+
+      // Payment Done WhatsApp
+      if (paymentStatus == 'Paid') {
+        final paidMessage = WhatsAppService.paymentDoneMessage({
+          'machine': booking.product,
+          'price': booking.price,
+          'paymentStatus': 'Paid',
+          'status': booking.status,
+          'userLat': userLat,
+          'userLng': userLng,
+          'workLocation': booking.location,
+          'agentLocation': widget.agent['location'] ?? '',
+          'agentPhone': booking.agentPhone,
+          'userPhone': booking.userPhone,
+        });
+        await WhatsAppService.openMessage(phone: booking.userPhone, message: paidMessage);
+        await WhatsAppService.openMessage(phone: booking.agentPhone, message: paidMessage);
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
       }
 
       if (!mounted) return;

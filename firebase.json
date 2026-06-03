@@ -4,6 +4,7 @@
   },
   "firestore": {
     "rules": "firestore.rules"
+<<<<<<< HEAD
   },
   "hosting": {
     "public": "build/web",
@@ -18,5 +19,7 @@
         "destination": "/index.html"
       }
     ]
+=======
+>>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
   }
 }
