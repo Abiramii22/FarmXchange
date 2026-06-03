@@ -47,9 +47,14 @@ class MyApp extends StatelessWidget {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return const _StartupScreen();
                 }
+
                 if (snapshot.hasError) {
-                  return _StartupError(message: snapshot.error.toString());
+                  return _StartupError(
+                    message:
+                        '${snapshot.error}\n\n${snapshot.stackTrace ?? "NO STACK TRACE"}',
+                  );
                 }
+
                 return const LoginScreen();
               },
             ),
