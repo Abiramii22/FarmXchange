@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'firebase_options.dart';
+
 import 'screens/login_screen.dart';
 import 'services/firebase_service.dart';
 
@@ -15,7 +17,9 @@ void main() {
 }
 
 Future<void> _initializeApp() async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
 
   Future.microtask(() async {
     try {
