@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 name: farmxchange
 description: A new Flutter project.
 
@@ -12,13 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.6 
-
+  http: ^0.13.6
   cupertino_icons: ^1.0.8
 
   flutter_localizations:
     sdk: flutter
-    
+
   firebase_core: ^2.32.0
   firebase_auth: ^4.16.0
   google_sign_in: ^6.2.2
@@ -31,55 +29,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^3.0.0
 
 flutter:
-  uses-material-design: true   # 👈 THIS LINE ADDED
+  uses-material-design: true
 
   assets:
     - assets/images/
     - assets/
-=======
-name: farmxchange
-description: A new Flutter project.
-
-publish_to: 'none'
-
-version: 1.0.0+1
-
-environment:
-  sdk: ">=3.0.0 <4.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  http: ^0.13.6 
-
-  cupertino_icons: ^1.0.8
-
-  flutter_localizations:
-    sdk: flutter
-    
-  firebase_core: ^2.32.0
-  firebase_auth: ^4.16.0
-  google_sign_in: ^6.2.2
-  cloud_firestore: ^4.17.5
-  cloud_functions: ^4.7.6
-  geolocator: ^12.0.0
-  razorpay_flutter: ^1.3.7
-  url_launcher: ^6.3.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-  flutter_lints: ^3.0.0
-
-flutter:
-  uses-material-design: true   # 👈 THIS LINE ADDED
-
-  assets:
-    - assets/images/
-    - assets/
->>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
