@@ -89,9 +89,16 @@ class _StartupError extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(18),
-          child: Text(
-            'App start failed: $message',
-            textAlign: TextAlign.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'App start failed: $message',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              SelectableText(message),
+            ],
           ),
         ),
       ),
