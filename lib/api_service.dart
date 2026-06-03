@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -11,18 +11,4 @@ class ApiService {
 
     return response.body;
   }
-=======
-import 'package:http/http.dart' as http;
-
-class ApiService {
-  static const String baseUrl = "http://10.0.2.2/farmxchange_api/";
-
-  static Future<String> login(String email, String password) async {
-    var response = await http.get(
-      Uri.parse("${baseUrl}login.php?email=$email&password=$password"),
-    );
-
-    return response.body;
-  }
->>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
 }

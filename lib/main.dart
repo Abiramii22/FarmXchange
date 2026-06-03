@@ -3,11 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/login_screen.dart';
-<<<<<<< HEAD
 import 'services/firebase_service.dart';
-=======
+
 import 'services/firebase_service.dart';
->>>>>>> d314aebe5da72d346a98d707b27d1b0f1d86d376
+
 import 'data/app_store.dart';
 
 void main() {
