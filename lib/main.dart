@@ -7,8 +7,6 @@ import 'firebase_options.dart';
 import 'screens/login_screen.dart';
 import 'services/firebase_service.dart';
 
-import 'services/firebase_service.dart';
-
 import 'data/app_store.dart';
 
 void main() {
@@ -21,13 +19,13 @@ Future<void> _initializeApp() async {
   options: DefaultFirebaseOptions.currentPlatform,
 );
 
-  Future.microtask(() async {
+  /*Future.microtask(() async {
     try {
       await FirebaseService.seedAgentsFromLocalProducts();
     } catch (_) {
       // Background seed must never block app startup.
     }
-  });
+  });*/
 }
 
 class MyApp extends StatelessWidget {
